@@ -22,12 +22,12 @@ class TicketController extends Controller
         $tickets = null;
 
         // Different views based on user role
-        if ($user->isAdmin()) {
+        if ($user->role === 'admin') {
             // HC sees all tickets
             $tickets = Ticket::with(['user', 'category'])
                     ->orderBy('created_at', 'desc')
                     ->get();
-        } elseif ($user->isIT()) {
+        } elseif ($user->role === 'IT') {
             // IT sees tickets assigned to IT department or specifically to them
             $tickets = Ticket::with(['user', 'category'])
                     ->where(function($query) use ($user) {
@@ -36,7 +36,7 @@ class TicketController extends Controller
                     })
                     ->orderBy('created_at', 'desc')
                     ->get();
-        } elseif ($user->isGA()) {
+        } elseif ($user->role === 'GA') {
             // GA sees tickets assigned to GA department or specifically to them
             $tickets = Ticket::with(['user', 'category'])
                     ->where(function($query) use ($user) {
@@ -61,7 +61,7 @@ class TicketController extends Controller
         $user = Auth::user();
 
         // Only regular users can create tickets
-        if (!$user->isUser()) {
+        if ($user->role !== 'user') {
             return response()->json(['message' => 'Only regular users can create tickets'], 403);
         }
 
@@ -122,7 +122,7 @@ class TicketController extends Controller
         $ticket->load(['user', 'category', 'assignedTo', 'messages.user', 'attachments', 'statusHistory.user']);
 
         // If this user is a regular user, filter out internal messages
-        if ($user->isUser()) {
+        if ($user->role === 'user') {
             $ticket->messages = $ticket->messages->filter(function($message) {
                 return !$message->is_internal;
             });
@@ -198,7 +198,7 @@ class TicketController extends Controller
             return true;
         }
 
-        if ($user->isGA() && $ticket->assigned_to_department === 'GA') {
+        if ($user->role === 'GA' && $ticket->assigned_to_department === 'GA') {
             return true;
         }
 
@@ -219,7 +219,7 @@ class TicketController extends Controller
             return true;
         }
 
-        if ($user->isGA() && $ticket->assigned_to_department === 'GA') {
+        if ($user->role === 'GA' && $ticket->assigned_to_department === 'GA') {
             return true;
         }
 

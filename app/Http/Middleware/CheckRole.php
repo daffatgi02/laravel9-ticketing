@@ -12,15 +12,31 @@ class CheckRole
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @param  string  $role
+     * @param  string  ...$roles
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (!$request->user() || $request->user()->role !== $role) {
-            return response()->json(['message' => 'Unauthorized access'], 403);
+        $user = $request->user();
+
+        if (!$user) {
+            return redirect()->route('login');
         }
 
-        return $next($request);
+        // Check if user has any of the specified roles
+        foreach ($roles as $role) {
+            if ($role === 'hc' && $user->isAdmin()) {
+                return $next($request);
+            } elseif ($role === 'it' && $user->isIT()) {
+                return $next($request);
+            } elseif ($role === 'ga' && $user->isGA()) {
+                return $next($request);
+            } elseif ($role === 'user' && $user->isUser()) {
+                return $next($request);
+            }
+        }
+
+        // If no matching role, abort with 403 error
+        return abort(403, 'Unauthorized action.');
     }
 }

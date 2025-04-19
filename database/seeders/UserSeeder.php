@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'HC Admin',
             'email' => 'hc@example.com',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('daffa123'),
             'role' => 'hc',
             'department_id' => 1, // HC Department
             'employee_id' => 'HC001',
@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'IT Support',
             'email' => 'it@example.com',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('daffa123'),
             'role' => 'it',
             'department_id' => 2, // IT Department
             'employee_id' => 'IT001',
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'GA Support',
             'email' => 'ga@example.com',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('daffa123'),
             'role' => 'ga',
             'department_id' => 3, // GA Department
             'employee_id' => 'GA001',
@@ -47,7 +47,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Regular User',
             'email' => 'user@example.com',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('daffa123'),
             'role' => 'user',
             'department_id' => 4, // Finance Department
             'employee_id' => 'FIN001',
